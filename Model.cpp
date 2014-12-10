@@ -24,9 +24,9 @@ void Model::render(Matrix4 matrix)
 		for (size_t i = 0; i < vertIndices.size(); ++i) {
 			size_t vertIndex = vertIndices[i] * 3;
 			size_t normIndex = normIndices[i] * 3;
-			size_t texIndex= texIndices[i] * 3;
-			glVertex3f(vertices[vertIndex + 0], vertices[vertIndex + 1], vertices[vertIndex + 2]);
+			size_t texIndex = texIndices[i] * 3;
 			glNormal3f(normals[normIndex + 0], normals[normIndex + 1], normals[normIndex + 2]);
+			glVertex3f(vertices[vertIndex + 0], vertices[vertIndex + 1], vertices[vertIndex + 2]);
 		}
 	}
 	glEnd();

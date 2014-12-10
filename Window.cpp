@@ -26,7 +26,7 @@ namespace
 	auto cone = std::make_shared<Cone>();
 	auto light = std::make_shared<Light>(GL_LIGHT0);
 	auto skybox = std::make_shared<Skybox>();
-	auto suit = parseModel("models/IronMan.obj");
+	auto suit = parseModel("models/Iron_Man.obj");
 	
 	bool useShader = false;
 
