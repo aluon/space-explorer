@@ -2,4 +2,4 @@
 #include <string>
 #include "Model.h"
 
-Model parseModel(const std::string &fileName);
+ModelPtr parseModel(const std::string &fileName);
