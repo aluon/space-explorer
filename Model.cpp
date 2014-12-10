@@ -27,7 +27,7 @@ void Model::render(Matrix4 matrix)
 	}
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(3, GL_FLOAT, 0, colors.data());
-	glDrawElements(GL_TRIANGLES, faces.size(), GL_UNSIGNED_INT, faces.data());
+	//glDrawElements(GL_TRIANGLES, faces.size(), GL_UNSIGNED_INT, faces.data());
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

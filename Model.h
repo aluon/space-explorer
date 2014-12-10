@@ -19,10 +19,8 @@ public:
 	void render(Matrix4 matrix);
 
 	Matrix4 transform;
-	std::vector<float> vertices;
-	std::vector<float> normals;
-	std::vector<float> colors;
-	std::vector<int> faces;
+	std::vector<float> vertices, normals, colors, texCoords;
+	std::vector<unsigned int> vertIndices, normIndices, texIndices;
 	Vector3 min, max;
 };
 

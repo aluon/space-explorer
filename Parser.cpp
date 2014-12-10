@@ -51,10 +51,16 @@ ModelPtr parseModel(const std::string &fileName)
 				tx, ty, tz,
 				nx, ny, nz;
 			if (sscanf_s(line, "f %u/%u/%u %u/%u/%u %u/%u/%u", &vx, &tx, &nx, &vy, &ty, &ny, &vz, &tz, &nz) == 9) {
+				model->normIndices.push_back(nx - 1);
+				model->normIndices.push_back(ny - 1);
+				model->normIndices.push_back(nz - 1);
+				model->texIndices.push_back(tx - 1);
+				model->texIndices.push_back(ty - 1);
+				model->texIndices.push_back(tz - 1);
 			}
-			model->faces.push_back(vx - 1);
-			model->faces.push_back(vy - 1);
-			model->faces.push_back(vz - 1);
+			model->vertIndices.push_back(vx - 1);
+			model->vertIndices.push_back(vy - 1);
+			model->vertIndices.push_back(vz - 1);
 		}
 	}
 	model->max = Vector3(xMax, yMax, zMax);
