@@ -8,3 +8,4 @@ void loadModel(const std::string &modelPath);
 void initScene();
 void centerAndFitModel();
 std::string loadShader(const std::string &shaderPath);
+void specialCallback(int key, int, int);

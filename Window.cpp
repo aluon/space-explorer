@@ -20,6 +20,8 @@ namespace
 	double frame = 0.0, frameElapsed = 0, lastFrameTime = 0.0, time;
 	long frameCount;
 
+	bool fullscreen = false;
+
 	auto scene = std::make_shared<MatrixTransform>();
 	auto camera = std::make_shared<MatrixTransform>();
 	auto sphere = std::make_shared<Sphere>();
@@ -108,6 +110,12 @@ void keyboardCallback(unsigned char key, int, int)
 			glUseProgram(NULL);
 		}
 		break;
+	case 27:
+		if (fullscreen) {
+			specialCallback(GLUT_KEY_F1, 0, 0);
+		} else {
+			exit(0);
+		}
 	}
 	displayCallback();
 }
@@ -115,8 +123,17 @@ void keyboardCallback(unsigned char key, int, int)
 void specialCallback(int key, int, int)
 {
 	switch (key) {
+	case GLUT_KEY_F1:
+		if (fullscreen) {
+			glutReshapeWindow(512, 512);
+			glutPositionWindow(100, 100);
+		} else {
+			glutFullScreen();
+		}
+		fullscreen = !fullscreen;
+		break;
 	default:
-		scene->transform = Transform::scale({ 6.0, 6.0, 6.0 });
+		break;
 	}
 }
 
