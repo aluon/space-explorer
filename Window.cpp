@@ -110,9 +110,17 @@ void keyboardCallback(unsigned char key, int, int)
 			glUseProgram(NULL);
 		}
 		break;
-	case 27:
+	case 13:	// enter key
 		if (fullscreen) {
-			specialCallback(GLUT_KEY_F1, 0, 0);
+			exitFullScreen();
+		} else {
+			fullscreen = true;
+			glutFullScreen();
+		}
+		break;
+	case 27:	// escape key
+		if (fullscreen) {
+			exitFullScreen();
 		} else {
 			exit(0);
 		}
@@ -120,17 +128,17 @@ void keyboardCallback(unsigned char key, int, int)
 	displayCallback();
 }
 
+void exitFullScreen()
+{
+	fullscreen = false;
+	glutReshapeWindow(512, 512);
+	glutPositionWindow(100, 100);
+}
+
 void specialCallback(int key, int, int)
 {
 	switch (key) {
 	case GLUT_KEY_F1:
-		if (fullscreen) {
-			glutReshapeWindow(512, 512);
-			glutPositionWindow(100, 100);
-		} else {
-			glutFullScreen();
-		}
-		fullscreen = !fullscreen;
 		break;
 	default:
 		break;
