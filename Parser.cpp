@@ -65,5 +65,6 @@ ModelPtr parseModel(const std::string &fileName)
 	}
 	model->max = Vector3(xMax, yMax, zMax);
 	model->min = Vector3(xMin, yMin, zMin);
+	model->transform = Transform::translate(model->getCenter().negate());
 	return model;
 }

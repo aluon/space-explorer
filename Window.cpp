@@ -161,7 +161,7 @@ int main(int argc, char** argv) {
 
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
 	glutInitWindowSize(windowWidth, windowHeight);
-	glutCreateWindow("Simple Water");
+	glutCreateWindow("IronMan");
 
 	shaderInit();
 
@@ -187,20 +187,14 @@ void initScene()
 	glEnable(GL_TEXTURE_2D);
 	glCullFace(GL_BACK);
 
-	Vector3 center(0, 0, 5);
+	Vector3 center(0, 0, 20);
 	Vector3 eye(0, 0, 0);
 	Vector3 up(0, 1, 0);
+
 	camera->transform = Transform::lookAt(center, eye, up);
-
-	skybox->loadTextures(skyboxTextures);
-	skybox->transform = Transform::scale({ 0.5, 0.5, 0.5 });
-
-	scene->transform = Transform::scale({ 6.0, 6.0, 6.0 });
-
-	//light->transform = Transform::translate({ 0.0, 0.9, -0.5 });
+	suit->transform = Transform::scale(4.0) * suit->transform;
 
 	camera->attach(scene);
-	scene->attach(skybox);
 	scene->attach(light);
 	scene->attach(suit);
 }
