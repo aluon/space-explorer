@@ -11,6 +11,7 @@
 #include "Skybox.h"
 #include "Shader.h"
 #include "Parser.h"
+#include "ParticleSystem.h"
 
 namespace
 {
@@ -28,6 +29,7 @@ namespace
 	auto cone = std::make_shared<Cone>();
 	auto light = std::make_shared<Light>(GL_LIGHT0);
 	auto skybox = std::make_shared<Skybox>();
+	auto particle = std::make_shared<ParticleSystem>(1000);
 	auto suit = parseModel("models/Iron_Man.obj");
 	
 	bool useShader = false;
@@ -148,6 +150,7 @@ void specialCallback(int key, int, int)
 void displayCallback()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	++particle->timeElapsed;
 	camera->render(Matrix4().identity());
 	glutSwapBuffers();
 }
@@ -222,4 +225,5 @@ void initScene()
 	camera->attach(scene);
 	scene->attach(light);
 	scene->attach(suit);
+	scene->attach(particle);
 }

@@ -95,6 +95,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Window.h" />
@@ -112,6 +113,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Window.cpp" />
