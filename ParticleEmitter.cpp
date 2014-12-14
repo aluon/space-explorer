@@ -7,9 +7,9 @@ ParticleEmitter::ParticleEmitter(int numParticles) : numParticles(numParticles)
 {
 	particles = std::vector<Particle>(numParticles, Particle());
 	for (auto &particle : particles) {
-		particle.position = { urd(el), 0.0, 0.0 };
-		particle.velocity = Vector3{ urd(el), 1, 0.0 } * pow(10.0, -6.0);
-		particle.acceleration = Vector3{ 0.0, -1.0, 0.0 } * pow(10.0, -9.0);
+		particle.position = Vector3{ nd(el), nd(el), nd(el) }.normalize();
+		particle.velocity = Vector3{ nd(el), 1, 0.0 } * pow(10.0, -3.0);
+		particle.acceleration = Vector3{ 0.0, -1.0, 0.0 } * pow(10.0, -6.0);
 		particle.lifespan = 10000;
 		particle.alive = true;
 	}
@@ -28,7 +28,8 @@ void ParticleEmitter::render(Matrix4 matrix)
 	glColor3d(0.0, 1.0, 0.0);
 	for (auto &particle : particles) {
 		if (particle.alive) {
-			glVertex3d(particle.position.x, particle.position.y, particle.position.z);
+			Vector3 position = particle.acceleration * particle.age * particle.age + particle.velocity * particle.age + particle.position;
+			glVertex3d(position.x, position.y, position.z);
 		}
 	}
 	glEnd();
@@ -37,11 +38,21 @@ void ParticleEmitter::render(Matrix4 matrix)
 void ParticleEmitter::update()
 {
 	for (auto &particle : particles) {
-		particle.position += particle.acceleration * particle.age * particle.age + particle.velocity * particle.age;
-
 		++particle.age;
 		if (particle.age > particle.lifespan) {
-			particle.alive = false;
+			if (endless) {
+				particle.age = 0;
+			} else {
+				particle.alive = false;
+			}
 		}
+	}
+}
+
+void ParticleEmitter::reset()
+{
+	for (auto &particle : particles) {
+		particle.alive = true;
+		particle.age = 0;
 	}
 }

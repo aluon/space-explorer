@@ -33,6 +33,7 @@ namespace
 	auto suit = parseModel("models/Iron_Man.obj");
 	
 	bool useShader = false;
+	bool rocketsOn = false;
 
 	GLuint program;
 
@@ -79,16 +80,16 @@ void keyboardCallback(unsigned char key, int, int)
 {
 	const double dr = 2.0, ds = 0.1, dt = 0.1;
 	switch (key) {
-	case 'w':
+	case 'z':
 		scene->transform *= Transform::rotateX(dr);
 		break;
-	case 'W':
+	case 'Z':
 		scene->transform *= Transform::rotateX(-dr);
 		break;
-	case 'q':
+	case 'x':
 		scene->transform *= Transform::rotateY(dr);
 		break;
-	case 'Q':
+	case 'X':
 		scene->transform *= Transform::rotateY(-dr);
 		break;
 	case 's':
@@ -97,8 +98,13 @@ void keyboardCallback(unsigned char key, int, int)
 	case 'S':
 		scene->transform *= Transform::scale(1.0 - ds);
 		break;
-	case 'X':
-		scene->transform *= Transform::translate({ -dt, 0.0, 0.0 });
+	case 'w':
+		rocketsOn = !rocketsOn;
+		if (rocketsOn) {
+			scene->attach(particle);
+		} else {
+			scene->detach(particle);
+		}
 		break;
 	case 'e':
 		useShader = !useShader;
@@ -108,7 +114,10 @@ void keyboardCallback(unsigned char key, int, int)
 			glUseProgram(NULL);
 		}
 		break;
-	case 13:	// enter key
+	case 8:	// backspace
+		particle->reset();
+		break;
+	case 13:	// enter
 		if (fullscreen) {
 			exitFullScreen();
 		} else {
@@ -116,7 +125,7 @@ void keyboardCallback(unsigned char key, int, int)
 			glutFullScreen();
 		}
 		break;
-	case 27:	// escape key
+	case 27:	// escape
 		if (fullscreen) {
 			exitFullScreen();
 		} else {
@@ -219,5 +228,4 @@ void initScene()
 	camera->attach(scene);
 	scene->attach(light);
 	//scene->attach(suit);
-	scene->attach(particle);
 }

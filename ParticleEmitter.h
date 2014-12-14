@@ -17,8 +17,13 @@ public:
 	std::random_device rd;
 	std::default_random_engine el{ rd() };
 	std::uniform_real_distribution<double> urd{ -1.0, 1.0 };
+	std::uniform_real_distribution<double> nd{ -1.0, 1.0 };
 
 	std::vector<Particle> particles;
 	void update();
+	void reset();
+
+	bool endless = true;
+	double particleSize = 1.0;
 };
 
