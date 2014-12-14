@@ -29,7 +29,7 @@ namespace
 	auto cone = std::make_shared<Cone>();
 	auto light = std::make_shared<Light>(GL_LIGHT0);
 	auto skybox = std::make_shared<Skybox>();
-	auto particle = std::make_shared<ParticleEmitter>(1000);
+	auto particle = std::make_shared<ParticleEmitter>(100);
 	auto suit = parseModel("models/Iron_Man.obj");
 	
 	bool useShader = false;
@@ -215,7 +215,6 @@ void initScene()
 	glEnable(GL_LIGHTING);
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_CULL_FACE);
-	glEnable(GL_TEXTURE_2D);
 	glCullFace(GL_BACK);
 
 	Vector3 center(0, 0, 20);
