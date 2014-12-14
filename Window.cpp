@@ -11,7 +11,7 @@
 #include "Skybox.h"
 #include "Shader.h"
 #include "Parser.h"
-#include "ParticleSystem.h"
+#include "ParticleEmitter.h"
 
 namespace
 {
@@ -29,7 +29,7 @@ namespace
 	auto cone = std::make_shared<Cone>();
 	auto light = std::make_shared<Light>(GL_LIGHT0);
 	auto skybox = std::make_shared<Skybox>();
-	auto particle = std::make_shared<ParticleSystem>(1000);
+	auto particle = std::make_shared<ParticleEmitter>(1000);
 	auto suit = parseModel("models/Iron_Man.obj");
 	
 	bool useShader = false;
@@ -75,7 +75,6 @@ void reshapeCallback(int width, int height)
 	glLoadIdentity();
 }
 
-double angle = 0.0;
 void keyboardCallback(unsigned char key, int, int)
 {
 	const double dr = 2.0, ds = 0.1, dt = 0.1;
@@ -100,9 +99,6 @@ void keyboardCallback(unsigned char key, int, int)
 		break;
 	case 'X':
 		scene->transform *= Transform::translate({ -dt, 0.0, 0.0 });
-		break;
-	case 'a':
-		angle += 0.1;
 		break;
 	case 'e':
 		useShader = !useShader;
@@ -150,7 +146,6 @@ void specialCallback(int key, int, int)
 void displayCallback()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	++particle->timeElapsed;
 	camera->render(Matrix4().identity());
 	glutSwapBuffers();
 }
@@ -165,7 +160,6 @@ void idleCallback()
 		lastFrameTime = time;
 		frameElapsed = 0;
 	}
-	angle += 0.05;
 	displayCallback();
 }
 
@@ -224,6 +218,6 @@ void initScene()
 
 	camera->attach(scene);
 	scene->attach(light);
-	scene->attach(suit);
+	//scene->attach(suit);
 	scene->attach(particle);
 }
