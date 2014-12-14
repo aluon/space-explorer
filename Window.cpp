@@ -12,6 +12,7 @@
 #include "Shader.h"
 #include "Parser.h"
 #include "ParticleEmitter.h"
+#include <Soil/SOIL.h>
 
 namespace
 {
@@ -29,7 +30,7 @@ namespace
 	auto cone = std::make_shared<Cone>();
 	auto light = std::make_shared<Light>(GL_LIGHT0);
 	auto skybox = std::make_shared<Skybox>();
-	auto particle = std::make_shared<ParticleEmitter>(100);
+	auto particle = std::make_shared<ParticleEmitter>(10);
 	auto suit = parseModel("models/Iron_Man.obj");
 	
 	bool useShader = false;
@@ -111,7 +112,7 @@ void keyboardCallback(unsigned char key, int, int)
 		if (useShader) {
 			glUseProgram(program);
 		} else {
-			glUseProgram(NULL);
+			glUseProgram(0);
 		}
 		break;
 	case 8:	// backspace
@@ -223,6 +224,20 @@ void initScene()
 
 	camera->transform = Transform::lookAt(center, eye, up);
 	suit->transform = Transform::scale(4.0) * suit->transform;
+
+	GLuint fireTexture = SOIL_load_OGL_texture
+	(
+		"assets/fire2.png",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+	);
+	if (!fireTexture) {
+		std::cout << "SOIL loading error: " << SOIL_last_result() << '\n';
+	}
+	particle->textureId = fireTexture;
+	particle->particleRadius = 3.0;
+	particle->transform = Transform::rotateZ(180.0);
 
 	camera->attach(scene);
 	scene->attach(light);
