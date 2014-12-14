@@ -221,7 +221,18 @@ void initScene()
 	Vector3 up(0, 1, 0);
 
 	camera->transform = Transform::lookAt(center, eye, up);
-	suit->transform = Transform::scale(4.0) * suit->transform;
+
+	GLuint suitTexture = SOIL_load_OGL_texture
+	(
+		"models/Iron_Man_D.tga",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+	);
+	if (!suitTexture) {
+		std::cout << "SOIL loading error: " << SOIL_last_result() << '\n';
+	}
+	suit->textureId = suitTexture;
 
 	GLuint fireTexture = SOIL_load_OGL_texture
 	(
@@ -236,9 +247,9 @@ void initScene()
 	particle->textureId = fireTexture;
 	particle->particleRadius = 3.0;
 	particle->transform = Transform::rotateZ(180.0);
-	particle->emitRate = 4;
+	particle->emitRate = 16;
 
 	camera->attach(scene);
 	scene->attach(light);
-	//scene->attach(suit);
+	scene->attach(suit);
 }

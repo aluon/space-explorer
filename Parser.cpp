@@ -46,6 +46,11 @@ ModelPtr parseModel(const std::string &fileName)
 			model->normals.push_back(x);
 			model->normals.push_back(y);
 			model->normals.push_back(z);
+		} else if (strncmp(line, "vt %f %f", 2) == 0) {
+			float v, t;
+			sscanf_s(line, "vt %f %f", &v, &t);
+			model->texCoords.push_back(v);
+			model->texCoords.push_back(t);
 		} else if (strncmp(line, "f ", 2) == 0) {
 			unsigned int vx, vy, vz,
 				tx, ty, tz,
