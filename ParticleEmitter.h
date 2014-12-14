@@ -24,6 +24,8 @@ public:
 	void update();
 	void reset();
 
+	int emitRate = 1;
+	int lastEmitTime = 0;
 	bool endless = true;
 	double particleRadius = 1;
 	GLuint textureId = 0;

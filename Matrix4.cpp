@@ -160,3 +160,32 @@ double* Matrix4::glMatrix()
 {
 	return transpose().getPointer();
 }
+
+
+Matrix4 Matrix4::billboardCylindrical()
+{
+	Matrix4 result = *this;
+	result.m[0][0] = 1.0;
+	result.m[0][1] = 0.0;
+	result.m[0][2] = 0.0;
+	result.m[2][0] = 0.0;
+	result.m[2][1] = 0.0;
+	result.m[2][2] = 1.0;
+	return result;
+}
+
+
+Matrix4 Matrix4::billboardSpherical()
+{
+	Matrix4 result = *this;
+	result.m[0][0] = 1.0;
+	result.m[0][1] = 0.0;
+	result.m[0][2] = 0.0;
+	result.m[1][0] = 0.0;
+	result.m[1][1] = 1.0;
+	result.m[1][2] = 0.0;
+	result.m[2][0] = 0.0;
+	result.m[2][1] = 0.0;
+	result.m[2][2] = 1.0;
+	return Matrix4();
+}

@@ -19,8 +19,7 @@ namespace
 	int windowWidth = 512, windowHeight = 512;
 	const double zNear = 1.0, zFar = 1000.0, fov = 60.0;
 
-	double frame = 0.0, frameElapsed = 0, lastFrameTime = 0.0, time;
-	long frameCount;
+	double frame = 0.0, frameElapsed = 0, lastFrameTime = 0.0;
 
 	bool fullscreen = false;
 
@@ -30,7 +29,7 @@ namespace
 	auto cone = std::make_shared<Cone>();
 	auto light = std::make_shared<Light>(GL_LIGHT0);
 	auto skybox = std::make_shared<Skybox>();
-	auto particle = std::make_shared<ParticleEmitter>(10);
+	auto particle = std::make_shared<ParticleEmitter>(1000);
 	auto suit = parseModel("models/Iron_Man.obj");
 	
 	bool useShader = false;
@@ -163,8 +162,7 @@ void displayCallback()
 void idleCallback()
 {
 	++frameElapsed;
-	++frameCount;
-	time = glutGet(GLUT_ELAPSED_TIME);
+	auto time = glutGet(GLUT_ELAPSED_TIME);
 	if (time - lastFrameTime > 1000) {
 		std::cout << "FPS: " << frameElapsed * 1000 / (time - lastFrameTime) << '\n';
 		lastFrameTime = time;
@@ -238,6 +236,7 @@ void initScene()
 	particle->textureId = fireTexture;
 	particle->particleRadius = 3.0;
 	particle->transform = Transform::rotateZ(180.0);
+	particle->emitRate = 4;
 
 	camera->attach(scene);
 	scene->attach(light);

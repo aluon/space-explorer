@@ -11,7 +11,6 @@ ParticleEmitter::ParticleEmitter(int numParticles) : numParticles(numParticles)
 		particle.velocity = Vector3{ nd(el) / 5, 1, nd(el) } * pow(10.0, -4.0);
 		particle.acceleration = Vector3{ 0.0, 1.0, 0.0 } * pow(10.0, -7.0);
 		particle.lifespan = 15000;
-		particle.alive = true;
 	}
 }
 
@@ -26,9 +25,12 @@ void ParticleEmitter::render(Matrix4 matrix)
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	glBindTexture(GL_TEXTURE_2D, textureId);
 	glLoadMatrixd((matrix * transform).glMatrix());
+
 	glBegin(GL_QUADS);
 	glColor3d(0.0, 1.0, 0.0);
 	for (auto &particle : particles) {
@@ -45,17 +47,33 @@ void ParticleEmitter::render(Matrix4 matrix)
 		}
 	}
 	glEnd();
+
 	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 }
 
 void ParticleEmitter::update()
 {
+	int time = glutGet(GLUT_ELAPSED_TIME);
+	double timeElapsed = (time - lastEmitTime) / 1000.0;
+	int test = 1 * 0.5;
+	int numToEmit = emitRate * timeElapsed;
+	if (numToEmit > 0) {
+		lastEmitTime = time;
+	}
+
 	for (auto &particle : particles) {
-		++particle.age;
-		if (particle.age > particle.lifespan) {
-			if (endless) {
+		if (!particle.alive) {
+			if (numToEmit > 0) {
 				particle.age = 0;
-			} else {
+				particle.alive = true;
+				--numToEmit;
+			}
+		} else {
+			++particle.age;
+			if (particle.age > particle.lifespan) {
 				particle.alive = false;
 			}
 		}
@@ -65,7 +83,7 @@ void ParticleEmitter::update()
 void ParticleEmitter::reset()
 {
 	for (auto &particle : particles) {
-		particle.alive = true;
+		particle.alive = false;
 		particle.age = 0;
 	}
 }

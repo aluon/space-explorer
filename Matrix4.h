@@ -27,6 +27,8 @@ public:
 	Matrix4 transpose();
 	void print(std::string);
 	double m[4][4];   // matrix elements; first index is for rows, second for columns (row-major)
+	Matrix4 billboardCylindrical();
+	Matrix4 billboardSpherical();
 };
 
 #endif
