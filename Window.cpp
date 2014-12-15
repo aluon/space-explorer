@@ -101,9 +101,9 @@ void keyboardCallback(unsigned char key, int, int)
 	case 'w':
 		rocketsOn = !rocketsOn;
 		if (rocketsOn) {
-			scene->attach(particle);
+			particle->enabled = true;
 		} else {
-			scene->detach(particle);
+			particle->enabled = false;
 		}
 		break;
 	case 'e':
@@ -252,4 +252,5 @@ void initScene()
 	camera->attach(scene);
 	scene->attach(light);
 	scene->attach(suit);
+	scene->attach(particle);
 }

@@ -64,6 +64,10 @@ void ParticleEmitter::update()
 		lastEmitTime = time;
 	}
 
+	if (!enabled) {
+		numToEmit = 0;
+	}
+
 	for (auto &particle : particles) {
 		if (!particle.alive) {
 			if (numToEmit > 0) {

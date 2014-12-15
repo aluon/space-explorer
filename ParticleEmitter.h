@@ -10,8 +10,16 @@ public:
 
 	virtual void render(Matrix4 matrix) override;
 
-	Vector3 center;
-	double timeBias;
+	void update();
+	void reset();
+
+	bool enabled = false;
+
+	int emitRate = 1;
+	int lastEmitTime = 0;
+	double particleRadius = 1;
+	GLuint textureId = 0;
+
 	unsigned long int timeElapsed = 0;
 	unsigned int numParticles;
 
@@ -21,13 +29,5 @@ public:
 	std::uniform_real_distribution<double> nd{ -1.0, 1.0 };
 
 	std::vector<Particle> particles;
-	void update();
-	void reset();
-
-	int emitRate = 1;
-	int lastEmitTime = 0;
-	bool endless = true;
-	double particleRadius = 1;
-	GLuint textureId = 0;
 };
 
