@@ -31,6 +31,7 @@ namespace
 	auto skybox = std::make_shared<Skybox>();
 	auto particle = std::make_shared<ParticleEmitter>(1000);
 	auto suit = parseModel("models/Iron_Man.obj");
+	auto suitTransform = std::make_shared<MatrixTransform>();
 	
 	bool useShader = false;
 	bool rocketsOn = false;
@@ -246,11 +247,12 @@ void initScene()
 	}
 	particle->textureId = fireTexture;
 	particle->particleRadius = 3.0;
-	particle->transform = Transform::translate({ 1.5, -1.0, 0.0 }) * Transform::rotateZ(180.0);
+	particle->transform = Transform::translate({ 0.0, 0.0, 0.0 }) * Transform::rotateZ(180.0);
 	particle->emitRate = 16;
 
 	camera->attach(scene);
 	scene->attach(light);
-	scene->attach(suit);
-	scene->attach(particle);
+	scene->attach(suitTransform);
+	suitTransform->attach(suit);
+	suitTransform->attach(particle);
 }
