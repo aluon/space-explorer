@@ -31,7 +31,6 @@ void Skybox::render(Matrix4 matrix)
 
 	for (int i = 5; i >= 0; i--)
 	{
-		if (i == 1) continue;	// don't texture bottom face
 		glBindTexture(GL_TEXTURE_2D, textures[i]);
 		glBegin(GL_QUADS);
 		{

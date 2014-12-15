@@ -70,6 +70,8 @@ ModelPtr parseModel(const std::string &fileName)
 	}
 	model->max = Vector3(xMax, yMax, zMax);
 	model->min = Vector3(xMin, yMin, zMin);
-	model->transform = Transform::translate(model->getCenter().negate());
+	auto dimensions = model->getDimensions();
+	double largest = std::max(dimensions.x, std::max(dimensions.y, dimensions.z));
+	model->transform = Transform::scale(1 / largest) * Transform::translate(model->getCenter().negate());
 	return model;
 }

@@ -8,9 +8,9 @@ ParticleEmitter::ParticleEmitter(int numParticles) : numParticles(numParticles)
 	particles = std::vector<Particle>(numParticles, Particle());
 	for (auto &particle : particles) {
 		particle.position = Vector3{ nd(el), 2 * nd(el), nd(el) }.normalize() * 0.2;
-		particle.velocity = Vector3{ nd(el) / 2, 10, nd(el) } * pow(10.0, -3.0);
-		particle.acceleration = Vector3{ 0.0, -2.0, 0.0 } * pow(10.0, -6.0);
-		particle.lifespan = 1200;
+		particle.velocity = Vector3{ nd(el) / 2, 10, nd(el) } * pow(10.0, -2.0);
+		particle.acceleration = Vector3{ 0.0, -2.0, 0.0 } * pow(10.0, -5.0);
+		particle.lifespan = 200;
 	}
 }
 

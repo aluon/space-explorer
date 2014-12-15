@@ -30,7 +30,7 @@ namespace
 	auto light = std::make_shared<Light>(GL_LIGHT0);
 	auto skybox = std::make_shared<Skybox>();
 	auto particle = std::make_shared<ParticleEmitter>(1000);
-	auto suit = parseModel("models/Iron_Man.obj");
+	auto suit = parseModel("models/arc170lp.obj");
 	auto suitTransform = std::make_shared<MatrixTransform>();
 	
 	bool useShader = false;
@@ -116,6 +116,7 @@ void keyboardCallback(unsigned char key, int, int)
 		}
 		break;
 	case 8:	// backspace
+		scene->transform = Matrix4().identity();
 		particle->reset();
 		break;
 	case 13:	// enter
@@ -225,7 +226,7 @@ void initScene()
 
 	GLuint suitTexture = SOIL_load_OGL_texture
 	(
-		"models/Iron_Man_D.tga",
+		"assets/arc170.tga",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
@@ -247,8 +248,8 @@ void initScene()
 	}
 	particle->textureId = fireTexture;
 	particle->particleRadius = 3.0;
-	particle->transform = Transform::translate({ 0.0, -3.25, 0.0 }) * Transform::rotateZ(180.0);
-	particle->emitRate = 16;
+	particle->transform = Transform::scale(0.05) * Transform::rotateX(90.0) * Transform::translate({ 0.0, 6.0, 0.0 });
+	particle->emitRate = 20;
 
 	camera->attach(scene);
 	scene->attach(light);
