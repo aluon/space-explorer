@@ -8,9 +8,9 @@ ParticleEmitter::ParticleEmitter(int numParticles) : numParticles(numParticles)
 	particles = std::vector<Particle>(numParticles, Particle());
 	for (auto &particle : particles) {
 		particle.position = Vector3{ nd(el), 2 * nd(el), nd(el) }.normalize() * 0.2;
-		particle.velocity = Vector3{ nd(el) / 5, 1, nd(el) } * pow(10.0, -3.0);
-		particle.acceleration = Vector3{ 0.0, 1.0, 0.0 } * pow(10.0, -6.0);
-		particle.lifespan = 15000;
+		particle.velocity = Vector3{ nd(el) / 2, 10, nd(el) } * pow(10.0, -3.0);
+		particle.acceleration = Vector3{ 0.0, -2.0, 0.0 } * pow(10.0, -6.0);
+		particle.lifespan = 1200;
 	}
 }
 
@@ -29,7 +29,8 @@ void ParticleEmitter::render(Matrix4 matrix)
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	glBindTexture(GL_TEXTURE_2D, textureId);
-	glLoadMatrixd((matrix * transform).billboardCylindrical().glMatrix());
+	//glLoadMatrixd((matrix * transform).billboardCylindrical().glMatrix());
+	glLoadMatrixd((matrix * transform).glMatrix());
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	//glColor4d(1.0, 1.0, 1.0, 1.0);
 	glBegin(GL_QUADS);
