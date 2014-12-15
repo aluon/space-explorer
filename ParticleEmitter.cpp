@@ -37,6 +37,7 @@ void ParticleEmitter::render(Matrix4 matrix)
 	for (auto &particle : particles) {
 		if (particle.alive) {
 			Vector3 position = particle.acceleration * particle.age * particle.age + particle.velocity * particle.age + particle.position;
+			// front/back
 			glTexCoord2d(0.0, 0.0);
 			glVertex3d(position.x - particleRadius, position.y - particleRadius,  position.z);
 			glTexCoord2d(1.0, 0.0);
@@ -46,17 +47,15 @@ void ParticleEmitter::render(Matrix4 matrix)
 			glTexCoord2d(0.0, 1.0);
 			glVertex3d(position.x - particleRadius, position.y + particleRadius, position.z);
 
-			/*
-			double midpoint = (position.x + particleRadius) / 2;
+			// sides
 			glTexCoord2d(0.0, 0.0);
-			glVertex3d(midpoint, position.y, position.z + particleRadius);
+			glVertex3d(position.x, position.y - particleRadius,  position.z + particleRadius);
 			glTexCoord2d(1.0, 0.0);
-			glVertex3d(midpoint, position.y, position.z + particleRadius);
+			glVertex3d(position.x, position.y - particleRadius, position.z - particleRadius);
 			glTexCoord2d(1.0, 1.0);
-			glVertex3d(midpoint, position.y + particleRadius, position.z);
+			glVertex3d(position.x, position.y + particleRadius, position.z - particleRadius);
 			glTexCoord2d(0.0, 1.0);
-			glVertex3d(midpoint, position.y + particleRadius, position.z);
-			*/
+			glVertex3d(position.x, position.y + particleRadius, position.z + particleRadius);
 		}
 	}
 	glEnd();

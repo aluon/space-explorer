@@ -247,7 +247,7 @@ void initScene()
 	}
 	particle->textureId = fireTexture;
 	particle->particleRadius = 3.0;
-	particle->transform = Transform::translate({ 0.0, 0.0, 0.0 }) * Transform::rotateZ(180.0);
+	particle->transform = Transform::translate({ 0.0, -3.25, 0.0 }) * Transform::rotateZ(180.0);
 	particle->emitRate = 16;
 
 	camera->attach(scene);
