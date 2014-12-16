@@ -22,7 +22,7 @@ public:
 	std::vector<float> vertices, normals, colors, texCoords;
 	std::vector<unsigned int> vertIndices, normIndices, texIndices;
 	Vector3 min, max;
-	GLuint textureId = 0;
+	GLuint textureId = 0, programId = 0;
 };
 
 using ModelPtr = std::shared_ptr<Model>;

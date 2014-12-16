@@ -1,3 +1,4 @@
+#include <GL\glew.h>
 #include "Model.h"
 
 Model::Model()
@@ -18,6 +19,7 @@ Vector3 Model::getDimensions()
 void Model::render(Matrix4 matrix)
 {
 	matrix *= transform;
+	glUseProgram(programId);
 	glLoadMatrixd(matrix.glMatrix());
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textureId);
@@ -34,4 +36,5 @@ void Model::render(Matrix4 matrix)
 	}
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
+	glUseProgram(0);
 }

@@ -39,12 +39,13 @@ namespace
 
 	Vector3 initialMousePos;
 	
-	bool useShader = false;
+	bool useShader = true;
 	bool rocketsOn = false;
 	bool lmbDown = false;
 	bool rmbDown = false;
 
 	GLuint program;
+	GLuint shipShaderProgram = 0, skyboxShaderProgram = 0;
 }
 
 double aspect()
@@ -117,7 +118,7 @@ void reshapeCallback(int width, int height)
 void keyboardCallback(unsigned char key, int, int)
 {
 	const double dr = 2.0, ds = 0.1, dt = 0.1;
-	Vector3 forward = (eye - center).normalize();
+	Vector3 forward = (eye - center).normalize() * 0.1;
 	switch (key) {
 	case 'z':
 		camera->transform *= Transform::rotateX(dr);
@@ -151,9 +152,11 @@ void keyboardCallback(unsigned char key, int, int)
 	case 'e':
 		useShader = !useShader;
 		if (useShader) {
-			glUseProgram(program);
+			ship->programId = shipShaderProgram;
+			skybox->programId = skyboxShaderProgram;
 		} else {
-			glUseProgram(0);
+			ship->programId = 0;
+			//skybox->programId = 0;
 		}
 		break;
 	case 8:	// backspace
@@ -220,18 +223,17 @@ void shaderInit()
 	if (!GLEW_ARB_vertex_shader || !GLEW_ARB_fragment_shader) {
 		exit(1);
 	}
-	program = glCreateProgram();
-	/*
-	glAttachShader(program, loadShader(GL_VERTEX_SHADER, "shaders/water.vert"));
-	glAttachShader(program, loadShader(GL_FRAGMENT_SHADER, "shaders/water.frag"));
-	*/
-	glLinkProgram(program);
+	shipShaderProgram = glCreateProgram();
+	glAttachShader(shipShaderProgram, loadShader(GL_VERTEX_SHADER, "shaders/water.vert"));
+	glAttachShader(shipShaderProgram, loadShader(GL_FRAGMENT_SHADER, "shaders/water.frag"));
+	glLinkProgram(shipShaderProgram);
+	ship->programId = shipShaderProgram;
 
-	program = glCreateProgram();
-	glAttachShader(program, loadShader(GL_VERTEX_SHADER, "shaders/skybox.vert"));
-	glAttachShader(program, loadShader(GL_FRAGMENT_SHADER, "shaders/skybox.frag"));
-	glLinkProgram(program);
-	skybox->programId = program;
+	skyboxShaderProgram = glCreateProgram();
+	glAttachShader(skyboxShaderProgram, loadShader(GL_VERTEX_SHADER, "shaders/skybox.vert"));
+	glAttachShader(skyboxShaderProgram, loadShader(GL_FRAGMENT_SHADER, "shaders/skybox.frag"));
+	glLinkProgram(skyboxShaderProgram);
+	skybox->programId = skyboxShaderProgram;
 }
 
 int main(int argc, char** argv) {
