@@ -17,7 +17,7 @@
 namespace
 {
 	int windowWidth = 512, windowHeight = 512;
-	const double zNear = 1.0, zFar = 1000.0, fov = 60.0;
+	const double zNear = 0.1, zFar = 1000.0, fov = 60.0;
 
 	double frame = 0.0, frameElapsed = 0, lastFrameTime = 0.0;
 
@@ -32,6 +32,10 @@ namespace
 	auto tailEmitter = std::make_shared<ParticleEmitter>(1000);
 	auto ship = parseModel("models/arc170lp.obj");
 	auto shipTransform = std::make_shared<MatrixTransform>();
+
+	Vector3 center(0, 0, 1.5);
+	Vector3 eye(0, 0, 0);
+	Vector3 up(0, 1, 0);
 	
 	bool useShader = false;
 	bool rocketsOn = false;
@@ -70,24 +74,25 @@ void reshapeCallback(int width, int height)
 void keyboardCallback(unsigned char key, int, int)
 {
 	const double dr = 2.0, ds = 0.1, dt = 0.1;
+	Vector3 forward = (eye - center).normalize();
 	switch (key) {
 	case 'z':
-		scene->transform *= Transform::rotateX(dr);
+		camera->transform *= Transform::rotateX(dr);
 		break;
 	case 'Z':
-		scene->transform *= Transform::rotateX(-dr);
+		camera->transform *= Transform::rotateX(-dr);
 		break;
 	case 'x':
-		scene->transform *= Transform::rotateY(dr);
+		camera->transform *= Transform::rotateY(dr);
 		break;
 	case 'X':
-		scene->transform *= Transform::rotateY(-dr);
+		camera->transform *= Transform::rotateY(-dr);
 		break;
 	case 's':
-		scene->transform *= Transform::scale(1.0 + ds);
+		camera->transform *= Transform::translate(-forward);
 		break;
 	case 'S':
-		scene->transform *= Transform::scale(1.0 - ds);
+		camera->transform *= Transform::translate(forward);
 		break;
 	case 'w':
 		shipTransform->transform *= Transform::rotateX(1.0);
@@ -255,13 +260,11 @@ void initScene()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	Vector3 center(0, 0, 20);
-	Vector3 eye(0, 0, 0);
-	Vector3 up(0, 1, 0);
-
 	camera->transform = Transform::lookAt(center, eye, up);
+	camera->transform *= Transform::rotateX(15.0);
 
 	skybox->transform = Transform::scale(100);
+	shipTransform->transform *= Transform::translate({ 0.0, 0.0, 0.0 });
 
 	loadTextures();
 	tailEmitter->particleRadius = 3.0;
@@ -270,9 +273,9 @@ void initScene()
 	tailEmitter->enabled = true;
 
 	camera->attach(scene);
-	scene->attach(light);
-	scene->attach(shipTransform);
 	scene->attach(skybox);
+	scene->attach(light);
+	scene->attach(shipTransform); 
 	shipTransform->attach(ship);
 	shipTransform->attach(tailEmitter);
 }

@@ -26,7 +26,6 @@ void Skybox::render(Matrix4 matrix)
 	glUseProgram(0);
 
 	glDisable(GL_CULL_FACE);
-	glDisable(GL_DEPTH_TEST);
 }
 
 void Skybox::loadTextures(const std::vector<std::string> &filenames)
