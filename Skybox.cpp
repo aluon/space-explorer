@@ -5,46 +5,47 @@
 
 Skybox::Skybox()
 {
-
 }
 
 void Skybox::render(Matrix4 matrix)
 {
 	matrix *= transform;
 	glLoadMatrixd(matrix.glMatrix());
-	static const GLint faces[6][4] = {
-		{ 5, 1, 2, 6 },
-		{ 5, 4, 0, 1 },
-		{ 0, 4, 7, 3 },
-		{ 4, 5, 6, 7 },
-		{ 1, 0, 3, 2 },
-		{ 2, 3, 7, 6 } 
-	};
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
-	double v[8][3];
-	v[0][0] = v[1][0] = v[2][0] = v[3][0] = -1;
-	v[4][0] = v[5][0] = v[6][0] = v[7][0] = 1; 
-	v[0][1] = v[1][1] = v[4][1] = v[5][1] = -1;
-	v[2][1] = v[3][1] = v[6][1] = v[7][1] = 1; 
-	v[0][2] = v[3][2] = v[4][2] = v[7][2] = -1;
-	v[1][2] = v[2][2] = v[5][2] = v[6][2] = 1; 
+	glUseProgram(programId);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap);
+	glBindBuffer(GL_ARRAY_BUFFER, skyboxVbo);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3, GL_FLOAT, 12, nullptr);
+	glDrawArrays(GL_QUADS, 0, 24);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	glUseProgram(0);
 
-	for (int i = 5; i >= 0; i--)
-	{
-		glBindTexture(GL_TEXTURE_2D, textures[i]);
-		glBegin(GL_QUADS);
-		{
-			glTexCoord2f(0, 1);  glVertex3dv(&v[faces[i][0]][0]);
-			glTexCoord2f(1, 1);  glVertex3dv(&v[faces[i][1]][0]);
-			glTexCoord2f(1, 0);  glVertex3dv(&v[faces[i][2]][0]);
-			glTexCoord2f(0, 0);  glVertex3dv(&v[faces[i][3]][0]);
-		}
-		glEnd();
-	}
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_DEPTH_TEST);
 }
 
 void Skybox::loadTextures(const std::vector<std::string> &filenames)
 {
+	float SkyBoxVertices[] =
+	{	// x, y, z, x, y, z, x, y, z, x, y, z
+		1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f, // +X
+		-1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, // -X
+		-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, // +Y
+		-1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, // -Y
+		1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // +Z
+		-1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f  // -Z
+	};
+
+	glGenBuffers(1, &skyboxVbo);
+	glBindBuffer(GL_ARRAY_BUFFER, skyboxVbo);
+	glBufferData(GL_ARRAY_BUFFER, 288, SkyBoxVertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 	textures.clear();
 	for (const auto &filename : filenames) {
 		unsigned int id = SOIL_load_OGL_texture(

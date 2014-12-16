@@ -11,4 +11,6 @@ public:
 	virtual void render(Matrix4 matrix) override;
 	std::vector<unsigned int> textures;
 	unsigned int cubemap;
+	GLuint skyboxVbo = 0;
+	int programId = 0;
 };

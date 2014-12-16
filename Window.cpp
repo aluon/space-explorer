@@ -29,24 +29,14 @@ namespace
 	auto cone = std::make_shared<Cone>();
 	auto light = std::make_shared<Light>(GL_LIGHT0);
 	auto skybox = std::make_shared<Skybox>();
-	auto particle = std::make_shared<ParticleEmitter>(1000);
-	auto suit = parseModel("models/arc170lp.obj");
-	auto suitTransform = std::make_shared<MatrixTransform>();
+	auto tailEmitter = std::make_shared<ParticleEmitter>(1000);
+	auto ship = parseModel("models/arc170lp.obj");
+	auto shipTransform = std::make_shared<MatrixTransform>();
 	
 	bool useShader = false;
 	bool rocketsOn = false;
 
 	GLuint program;
-
-	std::vector<std::string> skyboxTextures
-	{
-		"assets/PalldioPalace_intern_left.jpg",
-		"assets/PalldioPalace_intern_base.jpg",
-		"assets/PalldioPalace_intern_right.jpg",
-		"assets/PalldioPalace_intern_back.jpg",
-		"assets/PalldioPalace_intern_front.jpg",
-		"assets/PalldioPalace_intern_top.jpg",
-	};
 }
 
 double aspect()
@@ -100,12 +90,15 @@ void keyboardCallback(unsigned char key, int, int)
 		scene->transform *= Transform::scale(1.0 - ds);
 		break;
 	case 'w':
+		shipTransform->transform *= Transform::rotateX(1.0);
 		rocketsOn = !rocketsOn;
+		/*
 		if (rocketsOn) {
-			particle->enabled = true;
+			tailEmitter->enabled = true;
 		} else {
-			particle->enabled = false;
+			tailEmitter->enabled = false;
 		}
+		*/
 		break;
 	case 'e':
 		useShader = !useShader;
@@ -117,7 +110,7 @@ void keyboardCallback(unsigned char key, int, int)
 		break;
 	case 8:	// backspace
 		scene->transform = Matrix4().identity();
-		particle->reset();
+		tailEmitter->reset();
 		break;
 	case 13:	// enter
 		if (fullscreen) {
@@ -185,6 +178,12 @@ void shaderInit()
 	glAttachShader(program, loadShader(GL_FRAGMENT_SHADER, "shaders/water.frag"));
 	*/
 	glLinkProgram(program);
+
+	program = glCreateProgram();
+	glAttachShader(program, loadShader(GL_VERTEX_SHADER, "shaders/skybox.vert"));
+	glAttachShader(program, loadShader(GL_FRAGMENT_SHADER, "shaders/skybox.frag"));
+	glLinkProgram(program);
+	skybox->programId = program;
 }
 
 int main(int argc, char** argv) {
@@ -210,6 +209,44 @@ int main(int argc, char** argv) {
 	glutMainLoop();
 }
 
+void loadTextures()
+{
+	GLuint shipTexture = SOIL_load_OGL_texture
+		(
+		"assets/arc170.tga",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+		);
+	if (!shipTexture) {
+		std::cout << "SOIL loading error: " << SOIL_last_result() << '\n';
+	}
+	ship->textureId = shipTexture;
+
+	GLuint fireTexture = SOIL_load_OGL_texture
+		(
+		"assets/fire2.png",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+		);
+	if (!fireTexture) {
+		std::cout << "SOIL loading error: " << SOIL_last_result() << '\n';
+	}
+	tailEmitter->textureId = fireTexture;
+
+	std::vector<std::string> skyboxTextures
+	{
+		"assets/spacel.png",
+		"assets/spaceb.png",
+		"assets/spacer.png",
+		"assets/spaceba.png",
+		"assets/spacef.png",
+		"assets/spacet.png"
+	};
+	skybox->loadTextures(skyboxTextures);
+}
+
 void initScene()
 {
 	glEnable(GL_DEPTH_TEST);
@@ -224,36 +261,18 @@ void initScene()
 
 	camera->transform = Transform::lookAt(center, eye, up);
 
-	GLuint suitTexture = SOIL_load_OGL_texture
-	(
-		"assets/arc170.tga",
-		SOIL_LOAD_AUTO,
-		SOIL_CREATE_NEW_ID,
-		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
-	);
-	if (!suitTexture) {
-		std::cout << "SOIL loading error: " << SOIL_last_result() << '\n';
-	}
-	suit->textureId = suitTexture;
+	skybox->transform = Transform::scale(100);
 
-	GLuint fireTexture = SOIL_load_OGL_texture
-	(
-		"assets/fire2.png",
-		SOIL_LOAD_AUTO,
-		SOIL_CREATE_NEW_ID,
-		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
-	);
-	if (!fireTexture) {
-		std::cout << "SOIL loading error: " << SOIL_last_result() << '\n';
-	}
-	particle->textureId = fireTexture;
-	particle->particleRadius = 3.0;
-	particle->transform = Transform::scale(0.05) * Transform::rotateX(90.0) * Transform::translate({ 0.0, 6.0, 0.0 });
-	particle->emitRate = 20;
+	loadTextures();
+	tailEmitter->particleRadius = 3.0;
+	tailEmitter->transform = Transform::scale(0.05) * Transform::rotateX(90.0) * Transform::translate({ 0.0, 6.0, 0.0 });
+	tailEmitter->emitRate = 20;
+	tailEmitter->enabled = true;
 
 	camera->attach(scene);
 	scene->attach(light);
-	scene->attach(suitTransform);
-	suitTransform->attach(suit);
-	suitTransform->attach(particle);
+	scene->attach(shipTransform);
+	scene->attach(skybox);
+	shipTransform->attach(ship);
+	shipTransform->attach(tailEmitter);
 }
