@@ -36,9 +36,13 @@ namespace
 	Vector3 center(0, 0, 1.5);
 	Vector3 eye(0, 0, 0);
 	Vector3 up(0, 1, 0);
+
+	Vector3 initialMousePos;
 	
 	bool useShader = false;
 	bool rocketsOn = false;
+	bool lmbDown = false;
+	bool rmbDown = false;
 
 	GLuint program;
 }
@@ -51,12 +55,51 @@ double aspect()
 	return static_cast<double>(windowWidth) / windowHeight;
 }
 
-void motionCallback(int x, int y)
+Vector3 mapMousePos(int x, int y)
 {
+	Vector3 v((2.0 * x - windowWidth) / windowWidth, (windowHeight - 2.0 * y) / windowHeight, 0.0);
+	double d = v.length();
+	d = (d < 1.0) ? d : 1.0;
+	v.z = sqrt(1.001 - d * d);
+	return v.normalize();
 }
 
 void mouseCallback(int button, int state, int x, int y)
 {
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		initialMousePos = mapMousePos(x, y);
+		lmbDown = true;
+	} else {
+		lmbDown = false;
+	}
+
+	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+		initialMousePos = mapMousePos(x, y);
+		rmbDown = true;
+	} else {
+		rmbDown = false;
+	}
+}
+
+
+void motionCallback(int x, int y)
+{
+	Vector3 mousePos = mapMousePos(x, y);
+	if (lmbDown) {
+		Vector3 direction = mousePos - initialMousePos;
+		double velocity = direction.length();
+		if (velocity > 0.0001) {
+			Vector3 axis = cross(initialMousePos, mousePos);
+			double angle = velocity;
+			camera->transform = Transform::rotate(angle, axis) * camera->transform;
+		}
+	}
+
+	if (rmbDown) {
+		double dx = mousePos.x - initialMousePos.x + mousePos.y - initialMousePos.y;
+		double zoom = dx / 5;
+		camera->transform *= Transform::translate(Vector3(0.0, 0.0, zoom));
+	}
 }
 
 void reshapeCallback(int width, int height)
@@ -114,7 +157,7 @@ void keyboardCallback(unsigned char key, int, int)
 		}
 		break;
 	case 8:	// backspace
-		scene->transform = Matrix4().identity();
+		camera->transform = Transform::lookAt(center, eye, up);
 		tailEmitter->reset();
 		break;
 	case 13:	// enter

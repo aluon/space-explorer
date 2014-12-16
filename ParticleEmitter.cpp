@@ -29,7 +29,6 @@ void ParticleEmitter::render(Matrix4 matrix)
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	glBindTexture(GL_TEXTURE_2D, textureId);
-	//glLoadMatrixd((matrix * transform).billboardCylindrical().glMatrix());
 	glLoadMatrixd((matrix * transform).glMatrix());
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	//glColor4d(1.0, 1.0, 1.0, 1.0);
