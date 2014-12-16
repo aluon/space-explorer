@@ -17,7 +17,7 @@
 namespace
 {
 	int windowWidth = 512, windowHeight = 512;
-	const double zNear = 0.01, zFar = 1000.0, fov = 60.0;
+	const double zNear = 0.1, zFar = 1000.0, fov = 60.0;
 
 	double frame = 0.0, frameElapsed = 0, lastFrameTime = 0.0;
 
