@@ -17,7 +17,7 @@
 namespace
 {
 	int windowWidth = 512, windowHeight = 512;
-	const double zNear = 0.1, zFar = 1000.0, fov = 60.0;
+	const double zNear = 0.01, zFar = 1000.0, fov = 60.0;
 
 	double frame = 0.0, frameElapsed = 0, lastFrameTime = 0.0;
 
@@ -133,10 +133,12 @@ void keyboardCallback(unsigned char key, int, int)
 		camera->transform *= Transform::rotateY(-dr);
 		break;
 	case 's':
-		camera->transform *= Transform::translate(-forward);
+		//camera->transform *= Transform::translate(-forward);
+		scene->transform *= Transform::scale(1.0 + ds);
 		break;
 	case 'S':
-		camera->transform *= Transform::translate(forward);
+		//camera->transform *= Transform::translate(forward);
+		scene->transform *= Transform::scale(1.0 - ds);
 		break;
 	case 'w':
 		shipTransform->transform *= Transform::rotateX(1.0);
@@ -154,9 +156,11 @@ void keyboardCallback(unsigned char key, int, int)
 		if (useShader) {
 			ship->programId = shipShaderProgram;
 			skybox->programId = skyboxShaderProgram;
+			std::cout << "Shaders on" << '\n';
 		} else {
 			ship->programId = 0;
-			//skybox->programId = 0;
+			skybox->programId = 0;
+			std::cout << "Shaders off" << '\n';
 		}
 		break;
 	case 8:	// backspace
@@ -224,8 +228,8 @@ void shaderInit()
 		exit(1);
 	}
 	shipShaderProgram = glCreateProgram();
-	glAttachShader(shipShaderProgram, loadShader(GL_VERTEX_SHADER, "shaders/water.vert"));
-	glAttachShader(shipShaderProgram, loadShader(GL_FRAGMENT_SHADER, "shaders/water.frag"));
+	glAttachShader(shipShaderProgram, loadShader(GL_VERTEX_SHADER, "shaders/perpixel.vert"));
+	glAttachShader(shipShaderProgram, loadShader(GL_FRAGMENT_SHADER, "shaders/perpixel.frag"));
 	glLinkProgram(shipShaderProgram);
 	ship->programId = shipShaderProgram;
 
