@@ -151,6 +151,12 @@ void keyboardCallback(unsigned char key, int, int)
 		}
 		*/
 		break;
+	case 'a':
+		shipTransform->transform *= Transform::rotateZ(1.0) * Transform::rotateY(0.2);
+		break;
+	case 'd':
+		shipTransform->transform *= Transform::rotateZ(-1.0) * Transform::rotateY(-0.2);
+		break;
 	case 'e':
 		useShader = !useShader;
 		if (useShader) {
@@ -165,6 +171,7 @@ void keyboardCallback(unsigned char key, int, int)
 		break;
 	case 8:	// backspace
 		camera->transform = Transform::lookAt(center, eye, up);
+		shipTransform->transform = Matrix4().identity();
 		tailEmitter->reset();
 		break;
 	case 13:	// enter
@@ -309,11 +316,13 @@ void initScene()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
+	GLfloat lightPos[] = { 0.0, 0.0, -1.0, 0.0 };
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+
 	camera->transform = Transform::lookAt(center, eye, up);
 	camera->transform *= Transform::rotateX(15.0);
 
 	skybox->transform = Transform::scale(100);
-	shipTransform->transform *= Transform::translate({ 0.0, 0.0, 0.0 });
 
 	loadTextures();
 	tailEmitter->particleRadius = 3.0;
