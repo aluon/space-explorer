@@ -24,14 +24,12 @@ void ParticleEmitter::render(Matrix4 matrix)
 	update();
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
-	glDisable(GL_DEPTH_TEST);
+	glDepthMask(GL_FALSE);
 	glDisable(GL_CULL_FACE);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	glBindTexture(GL_TEXTURE_2D, textureId);
 	glLoadMatrixd((matrix * transform).glMatrix());
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	//glColor4d(1.0, 1.0, 1.0, 1.0);
 	glBegin(GL_QUADS);
 	for (auto &particle : particles) {
 		if (particle.alive) {
@@ -61,7 +59,7 @@ void ParticleEmitter::render(Matrix4 matrix)
 
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
 	glEnable(GL_CULL_FACE);
 }
 
