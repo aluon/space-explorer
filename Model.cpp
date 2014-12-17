@@ -16,13 +16,29 @@ Vector3 Model::getDimensions()
 	return Vector3(abs(max.x - min.x), abs(max.y - min.y), abs(max.z - min.z));
 }
 
+void Model::bindShaderTextures()
+{
+	glActiveTexture(GL_TEXTURE0);
+	int texture_location = glGetUniformLocation(programId, "color_texture");
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	glUniform1i(texture_location, 0);
+
+	glActiveTexture(GL_TEXTURE1);
+	int normal_location = glGetUniformLocation(programId, "normal_texture");
+	glBindTexture(GL_TEXTURE_2D, normalMapId);
+	glUniform1i(normal_location, 1);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+}
+
 void Model::render(Matrix4 matrix)
 {
 	matrix *= transform;
 	glUseProgram(programId);
 	glLoadMatrixd(matrix.glMatrix());
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, textureId);
+	bindShaderTextures();
 	glBegin(GL_TRIANGLES);
 	{
 		for (size_t i = 0; i < vertIndices.size(); ++i) {

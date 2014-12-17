@@ -17,12 +17,12 @@ public:
 	Vector3 getCenter();
 	Vector3 getDimensions();
 	void render(Matrix4 matrix);
-
+	void bindShaderTextures();
 	Matrix4 transform;
 	std::vector<float> vertices, normals, colors, texCoords;
 	std::vector<unsigned int> vertIndices, normIndices, texIndices;
 	Vector3 min, max;
-	GLuint textureId = 0, programId = 0;
+	int textureId = 0, normalMapId = 0, programId = 0;
 };
 
 using ModelPtr = std::shared_ptr<Model>;

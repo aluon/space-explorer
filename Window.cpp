@@ -44,6 +44,8 @@ namespace
 	bool lmbDown = false;
 	bool rmbDown = false;
 
+	int shipTexture = 0, normalTexture = 0;
+
 	GLuint program;
 	GLuint shipShaderProgram = 0, skyboxShaderProgram = 0;
 }
@@ -145,9 +147,9 @@ void keyboardCallback(unsigned char key, int, int)
 		rocketsOn = !rocketsOn;
 		/*
 		if (rocketsOn) {
-			tailEmitter->enabled = true;
+		tailEmitter->enabled = true;
 		} else {
-			tailEmitter->enabled = false;
+		tailEmitter->enabled = false;
 		}
 		*/
 		break;
@@ -235,8 +237,8 @@ void shaderInit()
 		exit(1);
 	}
 	shipShaderProgram = glCreateProgram();
-	glAttachShader(shipShaderProgram, loadShader(GL_VERTEX_SHADER, "shaders/perpixel.vert"));
-	glAttachShader(shipShaderProgram, loadShader(GL_FRAGMENT_SHADER, "shaders/perpixel.frag"));
+	glAttachShader(shipShaderProgram, loadShader(GL_VERTEX_SHADER, "shaders/normalmapping.vert"));
+	glAttachShader(shipShaderProgram, loadShader(GL_FRAGMENT_SHADER, "shaders/normalmapping.frag"));
 	glLinkProgram(shipShaderProgram);
 	ship->programId = shipShaderProgram;
 
@@ -253,7 +255,7 @@ int main(int argc, char** argv) {
 
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
 	glutInitWindowSize(windowWidth, windowHeight);
-	glutCreateWindow("IronMan");
+	glutCreateWindow("Planets");
 
 	shaderInit();
 
@@ -272,7 +274,7 @@ int main(int argc, char** argv) {
 
 void loadTextures()
 {
-	GLuint shipTexture = SOIL_load_OGL_texture
+	shipTexture = SOIL_load_OGL_texture
 		(
 		"assets/arc170.tga",
 		SOIL_LOAD_AUTO,
@@ -284,7 +286,19 @@ void loadTextures()
 	}
 	ship->textureId = shipTexture;
 
-	GLuint fireTexture = SOIL_load_OGL_texture
+	normalTexture = SOIL_load_OGL_texture
+		(
+		"assets/arc170n.tga",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+		);
+	if (!normalTexture) {
+		std::cout << "SOIL loading error: " << SOIL_last_result() << '\n';
+	}
+	ship->normalMapId = normalTexture;
+
+	auto fireTexture = SOIL_load_OGL_texture
 		(
 		"assets/fire2.png",
 		SOIL_LOAD_AUTO,
@@ -294,6 +308,7 @@ void loadTextures()
 	if (!fireTexture) {
 		std::cout << "SOIL loading error: " << SOIL_last_result() << '\n';
 	}
+
 	tailEmitter->textureId = fireTexture;
 
 	std::vector<std::string> skyboxTextures
@@ -333,7 +348,7 @@ void initScene()
 	camera->attach(scene);
 	scene->attach(skybox);
 	scene->attach(light);
-	scene->attach(shipTransform); 
+	scene->attach(shipTransform);
 	shipTransform->attach(ship);
 	shipTransform->attach(tailEmitter);
 }
