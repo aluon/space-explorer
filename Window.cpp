@@ -13,6 +13,7 @@
 #include "Parser.h"
 #include "ParticleEmitter.h"
 #include <Soil/SOIL.h>
+#include "Camera.h"
 
 namespace
 {
@@ -24,19 +25,20 @@ namespace
 	bool fullscreen = false;
 
 	auto scene = std::make_shared<MatrixTransform>();
-	auto camera = std::make_shared<MatrixTransform>();
+	auto camera = std::make_shared<Camera>();
 	auto sphere = std::make_shared<Sphere>();
 	auto cone = std::make_shared<Cone>();
 	auto light = std::make_shared<Light>(GL_LIGHT0);
 	auto skybox = std::make_shared<Skybox>();
 	auto tailEmitter = std::make_shared<ParticleEmitter>(1000);
+	auto leftGun = std::make_shared<ParticleEmitter>(10);
+	auto rightGun = std::make_shared<ParticleEmitter>(10);
 	auto ship = parseModel("models/arc170lp.obj");
 	auto shipTransform = std::make_shared<MatrixTransform>();
 
 	Vector3 center(0, 0, 1.5);
 	Vector3 eye(0, 0, 0);
 	Vector3 up(0, 1, 0);
-	Matrix4 defaultCamera = Transform::lookAt(center, eye, up) * Transform::rotateX(15.0);
 
 	Vector3 initialMousePos;
 	
@@ -95,7 +97,7 @@ void motionCallback(int x, int y)
 		if (velocity > 0.0001) {
 			Vector3 axis = cross(initialMousePos, mousePos);
 			double angle = velocity;
-			camera->transform = Transform::rotate(angle, axis) * camera->transform;
+			camera->rotMatrix *= Transform::rotate(angle, axis);
 		}
 	}
 
@@ -124,35 +126,33 @@ void keyboardCallback(unsigned char key, int, int)
 	Vector3 forward = (eye - center).normalize() * 0.1;
 	switch (key) {
 	case 'z':
-		camera->transform *= Transform::rotateX(dr);
+		camera->rotMatrix *= Transform::rotateX(dr);
 		break;
 	case 'Z':
-		camera->transform *= Transform::rotateX(-dr);
+		camera->rotMatrix *= Transform::rotateX(-dr);
 		break;
 	case 'x':
-		camera->transform *= Transform::rotateY(dr);
+		camera->rotMatrix *= Transform::rotateY(dr);
 		break;
 	case 'X':
-		camera->transform *= Transform::rotateY(-dr);
+		camera->rotMatrix *= Transform::rotateY(-dr);
+		break;
+	case 'c':
+		camera->rotMatrix *= Transform::rotateZ(dr);
+		break;
+	case 'C':
+		camera->rotMatrix *= Transform::rotateZ(-dr);
 		break;
 	case 's':
-		//camera->transform *= Transform::translate(-forward);
-		scene->transform *= Transform::scale(1.0 + ds);
+		camera->center += forward;
+		camera->eye += forward;
 		break;
 	case 'S':
-		//camera->transform *= Transform::translate(forward);
-		scene->transform *= Transform::scale(1.0 - ds);
+		camera->center -= forward;
+		camera->eye -= forward;
 		break;
 	case 'w':
 		shipTransform->transform *= Transform::rotateX(1.0);
-		rocketsOn = !rocketsOn;
-		/*
-		if (rocketsOn) {
-		tailEmitter->enabled = true;
-		} else {
-		tailEmitter->enabled = false;
-		}
-		*/
 		break;
 	case 'a':
 		shipTransform->transform *= Transform::rotateZ(1.0) * Transform::rotateY(0.2);
@@ -172,7 +172,11 @@ void keyboardCallback(unsigned char key, int, int)
 			std::cout << "Shaders off" << '\n';
 		}
 		break;
-	case 8:	// backspace
+	case 32:	// space
+		leftGun->enabled = !leftGun->enabled;
+		rightGun->enabled = !rightGun->enabled;
+		break;
+	case 8:		// backspace
 		camera->transform = Transform::lookAt(center, eye, up);
 		shipTransform->transform = Matrix4().identity();
 		tailEmitter->reset();
@@ -204,8 +208,9 @@ void exitFullScreen()
 
 void specialCallback(int key, int, int)
 {
-	camera->transform = defaultCamera;
-	shipTransform->transform = Matrix4().identity();
+	camera->reset(center, eye, up);
+	camera->rotMatrix = Transform::rotateX(15.0);
+	Vector3 forward = (center - eye).normalize();
 	switch (key) {
 	case GLUT_KEY_F1:
 		break;
@@ -337,7 +342,10 @@ void initScene()
 	GLfloat lightPos[] = { 0.0, 0.0, -1.0, 0.0 };
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
-	camera->transform = defaultCamera;
+	camera->center = center;
+	camera->eye = eye;
+	camera->up = up;
+	camera->rotMatrix = Transform::rotateX(15.0);
 
 	skybox->transform = Transform::scale(100);
 
