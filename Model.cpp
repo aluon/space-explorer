@@ -19,12 +19,12 @@ Vector3 Model::getDimensions()
 void Model::bindShaderTextures()
 {
 	glActiveTexture(GL_TEXTURE0);
-	int texture_location = glGetUniformLocation(programId, "color_texture");
+	int texture_location = glGetUniformLocation(programId, "colorMap");
 	glBindTexture(GL_TEXTURE_2D, textureId);
 	glUniform1i(texture_location, 0);
 
 	glActiveTexture(GL_TEXTURE1);
-	int normal_location = glGetUniformLocation(programId, "normal_texture");
+	int normal_location = glGetUniformLocation(programId, "normalMap");
 	glBindTexture(GL_TEXTURE_2D, normalMapId);
 	glUniform1i(normal_location, 1);
 

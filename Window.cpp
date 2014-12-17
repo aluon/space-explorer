@@ -36,6 +36,7 @@ namespace
 	Vector3 center(0, 0, 1.5);
 	Vector3 eye(0, 0, 0);
 	Vector3 up(0, 1, 0);
+	Matrix4 defaultCamera = Transform::lookAt(center, eye, up) * Transform::rotateX(15.0);
 
 	Vector3 initialMousePos;
 	
@@ -203,6 +204,8 @@ void exitFullScreen()
 
 void specialCallback(int key, int, int)
 {
+	camera->transform = defaultCamera;
+	shipTransform->transform = Matrix4().identity();
 	switch (key) {
 	case GLUT_KEY_F1:
 		break;
@@ -334,8 +337,7 @@ void initScene()
 	GLfloat lightPos[] = { 0.0, 0.0, -1.0, 0.0 };
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
-	camera->transform = Transform::lookAt(center, eye, up);
-	camera->transform *= Transform::rotateX(15.0);
+	camera->transform = defaultCamera;
 
 	skybox->transform = Transform::scale(100);
 
