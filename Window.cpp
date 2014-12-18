@@ -251,6 +251,10 @@ void shaderInit()
 	if (!GLEW_ARB_vertex_shader || !GLEW_ARB_fragment_shader) {
 		exit(1);
 	}
+
+	printf("GLSL Version = %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	printf("GL Version = %s\n", glGetString(GL_VERSION));
+
 	shipShaderProgram = glCreateProgram();
 	glAttachShader(shipShaderProgram, loadShader(GL_VERTEX_SHADER, "shaders/normalmapping.vert"));
 	glAttachShader(shipShaderProgram, loadShader(GL_FRAGMENT_SHADER, "shaders/normalmapping.frag"));
