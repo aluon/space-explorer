@@ -123,7 +123,7 @@ void reshapeCallback(int width, int height)
 
 void keyboardCallback(unsigned char key, int, int)
 {
-	const double dr = 2.0, ds = 0.1, dt = 0.5;
+	const double dr = 2.0, ds = 0.1, dt = 0.5, ry = 1.0;
 	Vector3 forward = (eye - center).normalize() * 0.1;
 	switch (key) {
 	case 'z':
@@ -158,11 +158,11 @@ void keyboardCallback(unsigned char key, int, int)
 		break;
 	case 'a':
 		shipTransform->roll += dt;
-		camera->rotMatrix *= Transform::rotateY(-dt);
+		camera->rotMatrix *= Transform::rotateY(-ry);
 		break;
 	case 'd':
 		shipTransform->roll -= dt;
-		camera->rotMatrix *= Transform::rotateY(dt);
+		camera->rotMatrix *= Transform::rotateY(ry);
 		break;
 	case 'e':
 		useShader = !useShader;
@@ -182,7 +182,7 @@ void keyboardCallback(unsigned char key, int, int)
 		break;
 	case 8:		// backspace
 		camera->transform = Transform::lookAt(center, eye, up);
-		shipTransform->transform = Matrix4().identity();
+		shipTransform->reset();
 		tailEmitter->reset();
 		break;
 	case 13:	// enter
