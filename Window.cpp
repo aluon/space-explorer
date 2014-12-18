@@ -152,6 +152,9 @@ void keyboardCallback(unsigned char key, int, int)
 		camera->center -= forward;
 		camera->eye -= forward;
 		break;
+	case 'q':
+		shipTransform->pitch += dt;
+		break;
 	case 'w':
 		shipTransform->pitch += dt;
 		camera->rotMatrix *= Transform::rotateX(-ds);
@@ -344,7 +347,7 @@ void loadTextures()
 	if (!projectileTexture) {
 		std::cout << "SOIL loading error: " << SOIL_last_result() << '\n';
 	}
-	leftGun->textureId = projectileTexture;
+	leftGun->textureId = rightGun->textureId = projectileTexture;
 }
 
 void initScene()
