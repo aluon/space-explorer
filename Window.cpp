@@ -47,8 +47,6 @@ namespace
 	bool lmbDown = false;
 	bool rmbDown = false;
 
-	int shipTexture = 0, normalTexture = 0;
-
 	GLuint program;
 	GLuint shipShaderProgram = 0, skyboxShaderProgram = 0;
 }
@@ -156,9 +154,11 @@ void keyboardCallback(unsigned char key, int, int)
 		break;
 	case 'a':
 		shipTransform->transform *= Transform::rotateZ(1.0) * Transform::rotateY(0.2);
+		camera->rotMatrix *= Transform::rotateY(-ds);
 		break;
 	case 'd':
 		shipTransform->transform *= Transform::rotateZ(-1.0) * Transform::rotateY(-0.2);
+		camera->rotMatrix *= Transform::rotateY(ds);
 		break;
 	case 'e':
 		useShader = !useShader;
@@ -282,7 +282,7 @@ int main(int argc, char** argv) {
 
 void loadTextures()
 {
-	shipTexture = SOIL_load_OGL_texture
+	auto shipTexture = SOIL_load_OGL_texture
 		(
 		"assets/arc170.tga",
 		SOIL_LOAD_AUTO,
@@ -294,9 +294,9 @@ void loadTextures()
 	}
 	ship->textureId = shipTexture;
 
-	normalTexture = SOIL_load_OGL_texture
+	auto normalTexture = SOIL_load_OGL_texture
 		(
-		"assets/arc170n.tga",
+		"assets/arc170n2.tga",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
@@ -329,6 +329,18 @@ void loadTextures()
 		"assets/spacet.png"
 	};
 	skybox->loadTextures(skyboxTextures);
+
+	auto projectileTexture = SOIL_load_OGL_texture
+		(
+		"assets/weapon_flash2.jpg",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+		);
+	if (!projectileTexture) {
+		std::cout << "SOIL loading error: " << SOIL_last_result() << '\n';
+	}
+	leftGun->textureId = projectileTexture;
 }
 
 void initScene()
@@ -355,10 +367,15 @@ void initScene()
 	tailEmitter->emitRate = 20;
 	tailEmitter->enabled = true;
 
+	leftGun->transform = Transform::scale({0.05, 0.05, 0.85}) * Transform::rotateX(-90.0);
+	leftGun->particleRadius = 0.1;
+
 	camera->attach(scene);
 	scene->attach(skybox);
 	scene->attach(light);
 	scene->attach(shipTransform);
 	shipTransform->attach(ship);
 	shipTransform->attach(tailEmitter);
+	shipTransform->attach(leftGun);
+	//shipTransform->attach(rightGun);
 }
