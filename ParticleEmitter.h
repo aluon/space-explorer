@@ -22,8 +22,10 @@ public:
 
 	unsigned long int timeElapsed = 0;
 	unsigned int numParticles;
+	unsigned int lifetime = 200;
 
 	double spreadScale = 1.0;
+	double velocityScale = 1.0;
 
 	std::random_device rd;
 	std::default_random_engine el{ rd() };

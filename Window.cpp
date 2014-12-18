@@ -391,9 +391,11 @@ void initScene()
 	frontGun->emitRate = 10;
 	frontGun->particleRadius = 0.1;
 
-	starField->transform = Transform::scale({ 5.0, 5.0, 0.85 }) * Transform::rotateX(90.0);// *Transform::translate({ 0.0, 0.0, 10.0 });
+	starField->transform = Transform::scale({ 3.0, 3.0, 4.0 }) * Transform::rotateX(90.0);// *Transform::translate({ 0.0, 0.0, 10.0 });
 	starField->emitRate = 10;
-	starField->particleRadius = 0.001;
+	starField->particleRadius = 0.002;
+	starField->velocityScale = 0.5;
+	starField->enabled = true;
 
 	camera->attach(scene);
 	scene->attach(skybox);
