@@ -98,6 +98,7 @@
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleEmitter.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShipTransform.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Transform.h" />
@@ -117,6 +118,7 @@
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleEmitter.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShipTransform.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Transform.cpp" />

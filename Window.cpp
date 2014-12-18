@@ -3,17 +3,18 @@
 #include <stdlib.h>
 #include <GL/glew.h>
 #include <GL/glut.h>
+#include <Soil/SOIL.h>
 #include <iostream>
+#include <algorithm>
 #include "Window.h"
-#include "MatrixTransform.h"
 #include "Geode.h"
 #include "Light.h"
 #include "Skybox.h"
 #include "Shader.h"
 #include "Parser.h"
 #include "ParticleEmitter.h"
-#include <Soil/SOIL.h>
 #include "Camera.h"
+#include "ShipTransform.h"
 
 namespace
 {
@@ -34,7 +35,7 @@ namespace
 	auto leftGun = std::make_shared<ParticleEmitter>(10);
 	auto rightGun = std::make_shared<ParticleEmitter>(10);
 	auto ship = parseModel("models/arc170lp.obj");
-	auto shipTransform = std::make_shared<MatrixTransform>();
+	auto shipTransform = std::make_shared<ShipTransform>();
 
 	Vector3 center(0, 0, 1.5);
 	Vector3 eye(0, 0, 0);
@@ -49,6 +50,8 @@ namespace
 
 	GLuint program;
 	GLuint shipShaderProgram = 0, skyboxShaderProgram = 0;
+
+	double rollAngle = 0.0;
 }
 
 double aspect()
@@ -120,7 +123,7 @@ void reshapeCallback(int width, int height)
 
 void keyboardCallback(unsigned char key, int, int)
 {
-	const double dr = 2.0, ds = 0.1, dt = 0.1;
+	const double dr = 2.0, ds = 0.1, dt = 0.5;
 	Vector3 forward = (eye - center).normalize() * 0.1;
 	switch (key) {
 	case 'z':
@@ -150,15 +153,16 @@ void keyboardCallback(unsigned char key, int, int)
 		camera->eye -= forward;
 		break;
 	case 'w':
-		shipTransform->transform *= Transform::rotateX(1.0);
+		shipTransform->pitch += dt;
+		camera->rotMatrix *= Transform::rotateX(-ds);
 		break;
 	case 'a':
-		shipTransform->transform *= Transform::rotateZ(1.0) * Transform::rotateY(0.2);
-		camera->rotMatrix *= Transform::rotateY(-ds);
+		shipTransform->roll += dt;
+		camera->rotMatrix *= Transform::rotateY(-dt);
 		break;
 	case 'd':
-		shipTransform->transform *= Transform::rotateZ(-1.0) * Transform::rotateY(-0.2);
-		camera->rotMatrix *= Transform::rotateY(ds);
+		shipTransform->roll -= dt;
+		camera->rotMatrix *= Transform::rotateY(dt);
 		break;
 	case 'e':
 		useShader = !useShader;
