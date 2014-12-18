@@ -34,6 +34,8 @@ namespace
 	auto tailEmitter = std::make_shared<ParticleEmitter>(1000);
 	auto leftGun = std::make_shared<ParticleEmitter>(10);
 	auto rightGun = std::make_shared<ParticleEmitter>(10);
+	auto frontGun = std::make_shared<ParticleEmitter>(10);
+	auto starField = std::make_shared<ParticleEmitter>(100);
 	auto ship = parseModel("models/arc170lp.obj");
 	auto shipTransform = std::make_shared<ShipTransform>();
 
@@ -179,7 +181,11 @@ void keyboardCallback(unsigned char key, int, int)
 			std::cout << "Shaders off" << '\n';
 		}
 		break;
+	case 'f':
+		starField->enabled = !starField->enabled;
+		break;
 	case 32:	// space
+		frontGun->enabled = !frontGun->enabled;
 		leftGun->enabled = !leftGun->enabled;
 		rightGun->enabled = !rightGun->enabled;
 		break;
@@ -381,6 +387,14 @@ void initScene()
 	leftGun->transform = Transform::scale({0.05, 0.05, 0.85}) * Transform::rotateX(-90.0);
 	leftGun->particleRadius = 0.1;
 
+	frontGun->transform = Transform::scale({0.05, 0.05, 0.85}) * Transform::rotateX(-90.0);
+	frontGun->emitRate = 10;
+	frontGun->particleRadius = 0.1;
+
+	starField->transform = Transform::scale({ 5.0, 5.0, 0.85 }) * Transform::rotateX(90.0);// *Transform::translate({ 0.0, 0.0, 10.0 });
+	starField->emitRate = 10;
+	starField->particleRadius = 0.001;
+
 	camera->attach(scene);
 	scene->attach(skybox);
 	scene->attach(light);
@@ -388,5 +402,6 @@ void initScene()
 	shipTransform->attach(ship);
 	shipTransform->attach(tailEmitter);
 	shipTransform->attach(leftGun);
-	//shipTransform->attach(rightGun);
+	shipTransform->attach(frontGun);
+	shipTransform->attach(starField);
 }

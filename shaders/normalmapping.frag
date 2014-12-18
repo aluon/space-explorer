@@ -1,4 +1,3 @@
-#version 140
 varying vec3 lightVec;
 varying vec3 eyeVec;
 varying vec2 texCoord;
