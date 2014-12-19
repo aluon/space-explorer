@@ -349,7 +349,7 @@ void loadTextures()
 
 	auto projectileTexture = SOIL_load_OGL_texture
 		(
-		"assets/weapon_flash2.jpg",
+		"assets/weapon_flash2.png",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
 		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
@@ -394,7 +394,7 @@ void initScene()
 	starField->transform = Transform::scale({ 3.0, 3.0, 4.0 }) * Transform::rotateX(90.0);// *Transform::translate({ 0.0, 0.0, 10.0 });
 	starField->emitRate = 10;
 	starField->particleRadius = 0.002;
-	starField->velocityScale = 0.5;
+	starField->velocityScale = 0.1;
 	starField->enabled = true;
 
 	camera->attach(scene);
