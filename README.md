@@ -6,6 +6,9 @@ My final project for Intro to Computer Graphics course
 ![screenshot1](https://cloud.githubusercontent.com/assets/845643/5504306/1e841b98-8737-11e4-9948-6af84c8fe9d7.png)
 ![screenshot2](https://cloud.githubusercontent.com/assets/845643/5504307/1e8daafa-8737-11e4-92d0-5830e19c7c71.png)
 
+Video Link:
+https://www.youtube.com/watch?v=ON-hyha9xMU
+
 Features:
 * Per pixel illumination
 * Bump mapping
